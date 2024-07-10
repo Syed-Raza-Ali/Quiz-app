@@ -1,7 +1,9 @@
 from sqlmodel import SQLModel, Field
 from typing import Optional
 
-class User(SQLModel, table = True):
+# user class is used to store user data (user meanse quiz performer)
+
+class User(SQLModel, table = True): 
     user_id : Optional[int] = Field(None, primary_key=True)
     user_name : str
     user_emal : str
@@ -9,6 +11,9 @@ class User(SQLModel, table = True):
     # phone_number : int
     user_password : str
 
-class Token(SQLModel, table = True):
+
+# token for used to user identity 
+
+class Token(SQLModel, table = True):  
     token_id: Optional[int] = Field(None, primary_key=True)
     refresh_token:str    
