@@ -1,0 +1,5 @@
+for add jwt token :  `poetry add "python-jose[cryptography]"`
+    if type error : `poetry add types-python-jose`
+
+for password hashing : `poetry add "passlib[bcrypt]"`
+    if type error : `poetry add types-passlib`
