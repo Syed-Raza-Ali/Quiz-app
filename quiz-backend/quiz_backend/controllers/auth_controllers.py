@@ -20,8 +20,14 @@ def generateToken(data : dict, expiry_time : timedelta):
         raise je
          
 
+def passwordintoHash(plaintext : str):
+    hashedpassword = pwd_context.hash(plaintext)
+    return hashedpassword
+
+
 def verifyPassword():
     ...
+
 
 def tokenService():
     ...
