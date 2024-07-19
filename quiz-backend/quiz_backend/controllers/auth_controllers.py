@@ -25,8 +25,9 @@ def passwordintoHash(plaintext : str):
     return hashedpassword
 
 
-def verifyPassword():
-    ...
+def verifyPassword(hashPass : str , plainText : str):
+    verify_password = pwd_context.verify(plainText , hash=hashPass)
+    return verify_password
 
 
 def tokenService():

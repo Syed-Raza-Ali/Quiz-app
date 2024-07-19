@@ -23,8 +23,8 @@ def not_found(request: Request , exception : NotfoundException):
     return JSONResponse(status_code=404, content=f"{exception.not_found} not found")
 
 @app.exception_handler(ConflictException)
-def not_found(request: Request , exception : ConflictException):
-    return JSONResponse(status_code=404, content=f"{exception.not_found} not found")
+def confict_exeception(request: Request , exception : ConflictException):
+    return JSONResponse(status_code=404, content=f"This {exception.conflict_input} already exist")
 
 @app.get('/')
 def home():
