@@ -1,6 +1,9 @@
-from quiz_backend.utils.imports import (User , Token , UserModel, select, Session, passwordintoHash,verifyPassword)
-from quiz_backend.utils.exception import ConflictException
+from quiz_backend.utils.imports import (
+    User , Token , UserModel, select, Session, passwordintoHash,verifyPassword , generateToken , ConflictException ,)
+from quiz_backend.setting import access_expiry_time, refresh_expiry_time
 
+
+# this signUP function is validate user and generate access and refresh tokens
 def signUp(user_form: UserModel, session : Session):
     users = session.exec(select(User).where(User.user_email == user_form.user_email)).all()
     hashed_password = passwordintoHash(user_form.user_password)
@@ -20,4 +23,18 @@ def signUp(user_form: UserModel, session : Session):
     session.commit()    
     session.refresh(user)
 
-    # TODO: generate access token and refresh token     
+    # TODO: generate access token and refresh token
+    #      
+    data = {
+        "user_name" : user.user_name,
+        "user_email" : user.user_email
+    }
+    access_token = generateToken(data=data , expiry_time=access_expiry_time)
+    refresh_token = generateToken(data=data , expiry_time=refresh_expiry_time)
+    token = Token(refresh_token=refresh_token)
+    session.add(token)
+    session.commit()
+    return {
+        "access_token":access_token,
+        "refresh_token":refresh_token
+    }
