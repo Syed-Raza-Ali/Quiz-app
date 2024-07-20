@@ -5,7 +5,7 @@ from quiz_backend.setting import access_expiry_time, refresh_expiry_time
 
 # this signUP function is validate user and generate access and refresh tokens
 def signUp(user_form: UserModel, session : Session):
-    users = session.exec(select(User).where(User.user_email == user_form.user_email)).all()
+    users = session.exec(select(User))
     hashed_password = passwordintoHash(user_form.user_password)
 
     for user in users :

@@ -5,7 +5,7 @@ from quiz_backend.setting import algorithm,secret_key
 
 
 pwd_context = CryptContext(schemes="bcrypt")
-secret_key = "417242608b7b26062c4a07efc0aca5772d7f80181a8e1144c3bae953049e"
+# secret_key = "in env"
 
 def generateToken(data : dict, expiry_time : timedelta):
     try:
