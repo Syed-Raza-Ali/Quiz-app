@@ -1,6 +1,3 @@
-
-
-
 class InvalidInputException(Exception):
     # this fuction is initializer like constructor
     def __init__(self, args:object):

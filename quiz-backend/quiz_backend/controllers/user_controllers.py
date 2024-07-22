@@ -1,6 +1,6 @@
-from quiz_backend.utils.imports import (
-    User , Token , UserModel, select, Session, passwordintoHash,verifyPassword , generateToken , ConflictException ,)
 from quiz_backend.setting import access_expiry_time, refresh_expiry_time
+from quiz_backend.utils.imports import (
+    User , Token , UserModel, LoginModel, select, Session, passwordintoHash,verifyPassword , generateToken , ConflictException, InvalidInputException)
 
 
 # this signUP function is validate user and generate access and refresh tokens
@@ -38,3 +38,28 @@ def signUp(user_form: UserModel, session : Session):
         "access_token":access_token,
         "refresh_token":refresh_token
     }
+
+
+def login(login_form : LoginModel, session: Session):
+    users = session.exec(select(User))
+    for user in users:
+        user_email = user.user_email
+        verify_password = verifyPassword(user.user_password, login_form.user_password)
+        if user_email == login_form.user_email and verify_password :
+                     data = {
+                "user_name" : user.user_name,
+                "user_email" : user.user_email
+            }
+                     access_token = generateToken(data=data , expiry_time=access_expiry_time)
+                     refresh_token = generateToken(data=data , expiry_time=refresh_expiry_time)
+                     token = Token(refresh_token=refresh_token)
+                     session.add(token)
+                     session.commit()
+                     session.refresh(token)
+                     return {
+                        "access_token":access_token,
+                        "refresh_token":refresh_token
+                    }
+                    
+        else:
+             raise InvalidInputException("Email or password")

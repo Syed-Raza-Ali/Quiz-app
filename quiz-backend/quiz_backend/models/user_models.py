@@ -2,10 +2,12 @@ from sqlmodel import SQLModel, Field
 from typing import Optional
 
 
-class UserModel(SQLModel):
-    user_name : str
+class LoginModel(SQLModel):
     user_email : str
     user_password : str
+
+class UserModel(LoginModel):
+    user_name : str
 
 
 # user class is used to store user data (user meanse quiz performer)
