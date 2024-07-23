@@ -1,6 +1,13 @@
 from quiz_backend.setting import access_expiry_time, refresh_expiry_time
 from quiz_backend.utils.imports import (
-    User , Token , UserModel, LoginModel, select, Session, passwordintoHash,verifyPassword , generateToken , ConflictException, InvalidInputException)
+    User , Token , UserModel, LoginModel, select, Session, passwordintoHash,verifyPassword , generateToken, decodeToken, ConflictException, InvalidInputException, NotfoundException, Annotated, Depends  )
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from quiz_backend.controllers.auth_controllers import generateAccessAndRefreshToken
+
+
+
+# Schmea for token 
+auth_schema = OAuth2PasswordBearer(tokenUrl="")
 
 
 # this signUP function is validate user and generate access and refresh tokens
@@ -24,42 +31,76 @@ def signUp(user_form: UserModel, session : Session):
     session.refresh(user)
 
     # TODO: generate access token and refresh token
-    #      
+          
     data = {
         "user_name" : user.user_name,
-        "user_email" : user.user_email
+        "user_email" : user.user_email,
+        "access_expiry_time" : access_expiry_time,
+        "refresh_expiry_time" : refresh_expiry_time
     }
-    access_token = generateToken(data=data , expiry_time=access_expiry_time)
-    refresh_token = generateToken(data=data , expiry_time=refresh_expiry_time)
-    token = Token(refresh_token=refresh_token)
+    # access_token = generateToken(data=data , expiry_time=access_expiry_time)
+    # refresh_token = generateToken(data=data , expiry_time=refresh_expiry_time)
+    
+    token_data = generateAccessAndRefreshToken(data)
+    token = Token(refresh_token=token_data["refresh_token"],)
     session.add(token)
     session.commit()
-    return {
-        "access_token":access_token,
-        "refresh_token":refresh_token
-    }
+    return token_data
 
 
-def login(login_form : LoginModel, session: Session):
+def login(login_form : OAuth2PasswordRequestForm, session: Session):
     users = session.exec(select(User))
     for user in users:
         user_email = user.user_email
-        verify_password = verifyPassword(user.user_password, login_form.user_password)
-        if user_email == login_form.user_email and verify_password :
+        verify_password = verifyPassword(user.user_password, login_form.password)
+        if user_email == login_form.username and verify_password :
                      data = {
                 "user_name" : user.user_name,
-                "user_email" : user.user_email
+                "user_email" : user.user_email,
+                "access_expiry_time" : access_expiry_time,
+                "refresh_expiry_time" : refresh_expiry_time
             }
-                     access_token = generateToken(data=data , expiry_time=access_expiry_time)
-                     refresh_token = generateToken(data=data , expiry_time=refresh_expiry_time)
-                     token = Token(refresh_token=refresh_token)
+                    #  access_token = generateToken(data=data , expiry_time=access_expiry_time)
+                    #  refresh_token = generateToken(data=data , expiry_time=refresh_expiry_time)
+                    
+                     token_data = generateAccessAndRefreshToken(data)
+                     token = Token(refresh_token= token_data["refresh_token"],)
                      session.add(token)
                      session.commit()
                      session.refresh(token)
-                     return {
-                        "access_token":access_token,
-                        "refresh_token":refresh_token
-                    }
+                     return token_data
                     
         else:
              raise InvalidInputException("Email or password")
+        
+
+
+
+def getUser(token : Annotated[str, Depends(auth_schema)], session: Session):
+    try:
+        if token:
+            data = decodeToken(token)
+            user_email = data['user_email']
+            user = session.exec(select(User).where(User.user_email == user_email)).one()
+            return user
+    except :
+         raise NotfoundException("Token")
+
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
