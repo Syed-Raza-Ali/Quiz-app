@@ -25,4 +25,5 @@ class User(UserModel, table = True):
 
 class Token(SQLModel, table = True):   
     token_id: Optional[int] = Field(None, primary_key=True)
+    user_id : int = Field(int, foreign_key="user.user_id")
     refresh_token:str    
