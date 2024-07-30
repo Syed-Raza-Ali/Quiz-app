@@ -64,8 +64,8 @@ def login(login_form : OAuth2PasswordRequestForm, session: Session):
                     #  refresh_token = generateToken(data=data , expiry_time=refresh_expiry_time)
                     
                      token_data = generateAccessAndRefreshToken(data)
-                     select(Token).where(Token.user_id == user.user_id)
-                     token = Token(refresh_token= token_data["refresh_token"],)
+                     token = session.exec(select(Token).where(Token.user_id == user.user_id)).one()
+                     token.refresh_token = token_data["refresh_token"]
                      session.add(token)
                      session.commit()
                      session.refresh(token)

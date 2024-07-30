@@ -1,7 +1,7 @@
 from typing import Any
 from jose import jwt,JWTError
 from passlib.context import CryptContext
-from quiz_backend.utils.imports import timedelta
+from datetime import timedelta
 from quiz_backend.utils.types import TokenType
 from quiz_backend.setting import algorithm,secret_key
 

@@ -1,5 +1,5 @@
-from quiz_backend.utils.imports import TypedDict, timedelta
-
+from datetime import timedelta
+from typing import TypedDict
 TokenType = TypedDict(
     "TokenType",
     {
