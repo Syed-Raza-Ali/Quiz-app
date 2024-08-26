@@ -1,8 +1,10 @@
 export default function Home() {
   return (
-    <main>
-      <h1>HELLO QUIZ FRONTEND</h1>
-       <h4>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Distinctio non eaque hic, tempore molestiae in nihil quasi odit inventore! Facilis nisi expedita cumque a sapiente quibusdam saepe eligendi, consectetur temporibus dolorum assumenda praesentium quod?</h4>
+    <main className="bg-red-300 justify-between flex mx-20 my-5">
+      <div className="bg-blue-400"><h1>HELLO QUIZ FRONTEND</h1></div>
+      <div className="bg-blue-200"> <p>Paragraph</p></div>
+      
+       
     </main>
   );
 }
